@@ -23,6 +23,19 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get student by email
+router.get("/findByEmail/:email", async (req, res) => {
+  try {
+    const student = await Student.findOne({ email: req.params.email });
+    if (!student) {
+      res.status(404).send({ message: "Student not found" });
+    }
+    res.status(201).send(student);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 // Update students
 router.put("/:id", async (req, res) => {
   try {
@@ -35,7 +48,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete students
+// Delete student
 router.delete("/:id", async (req, res) => {
   try {
     await Student.findByIdAndDelete(req.params.id);
