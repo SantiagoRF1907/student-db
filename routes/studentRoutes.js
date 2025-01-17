@@ -37,11 +37,25 @@ router.get("/findByEmail/:email", async (req, res) => {
 });
 
 // Update students
-router.put("/:id", async (req, res) => {
+router.put("/updateGradeByEmail/:email", async (req, res) => {
   try {
-    const student = await Student.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const email = req.params.email;
+    const newGrade = req.body.grade;
+
+    if (!newGrade) {
+      res.status(400).send({ message: "Grade is required" });
+    }
+
+    const student = await Student.findOneAndUpdate(
+      { email },
+      { newGrade },
+      { new: true }
+    );
+
+    if (!student) {
+      res.status(404).send({ message: "Student not found" });
+    }
+
     res.send(student);
   } catch (error) {
     res.status(400).send(error);
